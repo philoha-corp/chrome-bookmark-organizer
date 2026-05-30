@@ -18,9 +18,9 @@ The popup is grouped into **Export**, **Import**, and **Refactor** sections.
 - **Copy to Clipboard** copies the whole Bookmarks Bar as Netscape HTML, ready to paste into an agent chat.
 - **Download File** saves it as `bookmarks-bar-YYYY-MM-DD.html` — the same format Chrome, Firefox, Safari, and Edge use, so it re-imports anywhere.
 
-**Import** (both add contents under a new `Imported <timestamp>` folder — never overwriting existing bookmarks)
-- **Paste HTML** opens a box; paste the HTML the agent gives you (use its copy button) and click **Import Pasted Bookmarks**.
-- **Choose File…** reads a `.html` (Netscape) or `.json` file.
+**Import** — paste HTML or choose a `.html` (Netscape) / `.json` file. Two modes via the **On import** dropdown:
+- **Add into a dated folder (safe)** — default. Contents go under a new `Imported <timestamp>` folder; nothing existing is touched.
+- **Replace all — reset Bar & import to root** — erases every current bookmark in the Bar, then imports the contents directly to the top level. Requires ticking a confirmation checkbox first (this is destructive).
 
 ## Refactor with an agent
 

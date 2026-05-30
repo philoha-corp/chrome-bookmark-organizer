@@ -153,6 +153,30 @@ button.wide {
   width: 100%;
 }
 
+.confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid #7a3434;
+  border-radius: 8px;
+  padding: 8px 9px;
+  background: #2a1a1d;
+  color: #ffd0d0;
+  font-size: 12px;
+}
+
+.confirm[hidden] {
+  display: none;
+}
+
+.confirm input {
+  margin-top: 2px;
+}
+
+.confirm strong {
+  color: #fff;
+}
+
 .paste-area {
   display: grid;
   gap: 7px;

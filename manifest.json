@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Bookmark Organizer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Export and import the current Chrome profile's Bookmarks Bar as a standard bookmark file.",
   "permissions": [
     "bookmarks",

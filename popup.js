@@ -3,6 +3,9 @@ const els = {
   copyExportButton: document.getElementById("copyExportButton"),
   importButton: document.getElementById("importButton"),
   importFile: document.getElementById("importFile"),
+  importMode: document.getElementById("importMode"),
+  resetConfirm: document.getElementById("resetConfirm"),
+  resetConfirmCheck: document.getElementById("resetConfirmCheck"),
   importPasteToggle: document.getElementById("importPasteToggle"),
   methodSelect: document.getElementById("methodSelect"),
   methodBlurb: document.getElementById("methodBlurb"),
@@ -24,6 +27,7 @@ els.importFile.addEventListener("change", (event) => {
 });
 els.importPasteToggle.addEventListener("click", () => togglePasteArea());
 els.importPasteButton.addEventListener("click", () => importPasted());
+els.importMode.addEventListener("change", () => updateImportMode());
 els.copyPromptButton.addEventListener("click", () => copyRefactorPrompt());
 els.methodSelect.addEventListener("change", () => updateMethodBlurb());
 
@@ -62,6 +66,8 @@ function chromeCall(fn, ...args) {
 
 const getTree = () => chromeCall(chrome.bookmarks.getTree.bind(chrome.bookmarks));
 const createBookmark = (payload) => chromeCall(chrome.bookmarks.create.bind(chrome.bookmarks), payload);
+const removeBookmark = (id) => chromeCall(chrome.bookmarks.remove.bind(chrome.bookmarks), id);
+const removeTree = (id) => chromeCall(chrome.bookmarks.removeTree.bind(chrome.bookmarks), id);
 
 function getNode(id) {
   return new Promise((resolve, reject) => {
@@ -136,6 +142,20 @@ function togglePasteArea() {
   }
 }
 
+function updateImportMode() {
+  const replace = els.importMode.value === "replace";
+  els.resetConfirm.hidden = !replace;
+  if (!replace) els.resetConfirmCheck.checked = false;
+}
+
+async function clearBar(barId) {
+  const node = await getNode(barId);
+  for (const child of node.children || []) {
+    if (child.url) await removeBookmark(child.id);
+    else await removeTree(child.id);
+  }
+}
+
 async function importBookmarks(file) {
   const text = await file.text();
   await importFromText(text, "the selected file");
@@ -154,6 +174,16 @@ function importPasted() {
 }
 
 async function importFromText(text, sourceLabel) {
+  const replace = els.importMode.value === "replace";
+  if (replace && !els.resetConfirmCheck.checked) {
+    setStatus("Confirm", "warn");
+    renderMessage(
+      `<div><strong>Replace mode is on.</strong></div>` +
+        `<div>Tick "Erase all current bookmarks" to confirm, or switch back to Add.</div>`
+    );
+    return null;
+  }
+
   setStatus("Importing", "warn");
   els.importButton.disabled = true;
   els.importPasteButton.disabled = true;
@@ -162,15 +192,27 @@ async function importFromText(text, sourceLabel) {
     if (!nodes.length) throw new Error(`No bookmarks found in ${sourceLabel}.`);
 
     const bar = await getBookmarksBar();
-    const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
-    const folder = await createBookmark({ parentId: bar.id, title: `Imported ${stamp}` });
-    const count = await createTree(nodes, folder.id);
+    let count;
 
-    renderMessage(
-      `<div><strong>Imported.</strong></div>` +
-        `<div>${count} bookmarks added under "Imported ${stamp}" in the Bookmarks Bar.</div>`
-    );
-    setStatus("Imported", "ok");
+    if (replace) {
+      await clearBar(bar.id);
+      count = await createTree(nodes, bar.id);
+      els.resetConfirmCheck.checked = false;
+      renderMessage(
+        `<div><strong>Replaced.</strong></div>` +
+          `<div>Bar reset — ${count} bookmarks imported to the Bookmarks Bar root.</div>`
+      );
+    } else {
+      const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
+      const folder = await createBookmark({ parentId: bar.id, title: `Imported ${stamp}` });
+      count = await createTree(nodes, folder.id);
+      renderMessage(
+        `<div><strong>Imported.</strong></div>` +
+          `<div>${count} bookmarks added under "Imported ${stamp}" in the Bookmarks Bar.</div>`
+      );
+    }
+
+    setStatus(replace ? "Replaced" : "Imported", "ok");
     return count;
   } catch (error) {
     renderError(error);

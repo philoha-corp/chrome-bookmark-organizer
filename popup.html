@@ -29,6 +29,17 @@
 
       <section class="group" aria-label="Import">
         <h3 class="group-label">Import</h3>
+        <label class="field">
+          <span class="field-label">On import</span>
+          <select id="importMode" class="select">
+            <option value="add">Add into a dated folder (safe)</option>
+            <option value="replace">Replace all — reset Bar & import to root</option>
+          </select>
+        </label>
+        <label id="resetConfirm" class="confirm" hidden>
+          <input id="resetConfirmCheck" type="checkbox">
+          <span>Erase <strong>all</strong> current bookmarks in the Bar before importing.</span>
+        </label>
         <div class="controls">
           <button id="importPasteToggle" type="button" class="primary">Paste HTML</button>
           <button id="importButton" type="button">Choose File…</button>
