@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bookmark Organizer</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="header">
+        <div class="brand">
+          <img class="logo" src="icons/icon48.png" alt="Bookmark Organizer logo" width="34" height="34">
+          <div>
+            <h1>Bookmark Organizer</h1>
+            <p>Back up & restructure your bookmarks</p>
+          </div>
+        </div>
+        <span id="statusPill" class="pill">Idle</span>
+      </header>
+
+      <section class="group" aria-label="Export">
+        <h3 class="group-label">Export</h3>
+        <div class="controls">
+          <button id="copyExportButton" type="button" class="primary">Copy to Clipboard</button>
+          <button id="exportButton" type="button">Download File</button>
+        </div>
+      </section>
+
+      <section class="group" aria-label="Import">
+        <h3 class="group-label">Import</h3>
+        <div class="controls">
+          <button id="importPasteToggle" type="button" class="primary">Paste HTML</button>
+          <button id="importButton" type="button">Choose File…</button>
+          <input id="importFile" type="file" accept=".html,.htm,.json" hidden>
+        </div>
+        <div id="pasteArea" class="paste-area" hidden>
+          <textarea id="pasteInput" placeholder="Paste the agent's exported bookmark HTML (or JSON), then click Import." spellcheck="false"></textarea>
+          <button id="importPasteButton" type="button">Import Pasted Bookmarks</button>
+        </div>
+      </section>
+
+      <section class="group" aria-label="Refactor with an agent">
+        <h3 class="group-label">Refactor with an agent</h3>
+        <label class="field">
+          <span class="field-label">Organizing method</span>
+          <select id="methodSelect" class="select"></select>
+        </label>
+        <p id="methodBlurb" class="hint method-blurb"></p>
+        <button id="copyPromptButton" type="button" class="outline wide">Copy Refactor Prompt</button>
+        <p class="hint">Paste this prompt + your export into an agent chat, then import its result.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Status</h2>
+        <div id="summary" class="summary">Export your Bookmarks Bar, or import one back in.</div>
+      </section>
+    </main>
+    <script src="prompts.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
