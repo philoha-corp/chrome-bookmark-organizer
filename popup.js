@@ -32,6 +32,7 @@ els.copyPromptButton.addEventListener("click", () => copyRefactorPrompt());
 els.methodSelect.addEventListener("change", () => updateMethodBlurb());
 
 initMethods();
+updateImportMode();
 
 function initMethods() {
   for (const method of METHODS) {
